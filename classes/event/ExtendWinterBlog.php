@@ -31,13 +31,6 @@ class ExtendWinterBlog
                     }
                 }
             });
-            
-            \Winter\Blog\Models\Post::extend(function ($model) {
-                $model->implement[] = 'Nimdoc.NimblockEditor.Behaviors.ConvertToHtml';
-                $model->addDynamicMethod('getContentRenderAttribute', function () use ($model) {
-                    return $model->convertJsonToHtml($model->getAttribute('content'));
-                });
-            });
         }
     }
 }

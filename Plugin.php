@@ -11,8 +11,10 @@
 
 use System\Classes\PluginBase;
 use Event;
+use Winter\Blog\Models\Post;
 
 use Nimdoc\NimblockWinterBlog\Classes\Event\ExtendWinterBlog;
+use Nimdoc\NimblockEditor\Classes\ConvertToHtml;
 
 class Plugin extends PluginBase
 {
@@ -26,10 +28,6 @@ class Plugin extends PluginBase
         ];
     }
 
-    public function registerSettings()
-    {
-    }
-
     /**
      * Boot method, called right before the request route.
      *
@@ -38,5 +36,14 @@ class Plugin extends PluginBase
     public function boot()
     {
         Event::subscribe(ExtendWinterBlog::class);
+
+        // Extend the Post model
+        Post::extend(function($model) {
+            $model->addDynamicMethod('getContentHtmlAttribute', function() use ($model) {
+                $convertToHtml = new ConvertToHtml();
+                $html = $convertToHtml->convertJsonToHtml($model->content);
+                return $html;
+            });
+        });
     }
 }
